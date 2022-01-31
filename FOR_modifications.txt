@@ -1,0 +1,65 @@
+
+
+        ['Subject ID',str,'x','Unique ID for the participant, used for saving important results'],
+        ['High Shock Level',int,1,"shock intensity"],
+        ['Low Shock Level',int,2,"shock intensity"],
+        ['Threat Speed Min',float,0.95,"Threats will move at least this fast relative to the player."],
+        ['Threat Speed Max',float,1.15,"Threats will move at most this fast relative to the player."],
+        ['Risk Min',float,0.55,"Rewards will be placed at least this far up the screen (fraction of screen)."],
+        ['Risk Max',float,0.65,"Rewards will be placed at most this far up the screen (fraction of screen)."],
+        ['Detection Min',float,0.4,"Minimum detection distance at which threats will start chasing the player (fraction of screen)."],
+        ['Detection Max',float,0.6,"Maximum detection distance at which threats will start chasing the player (fraction of screen)."],
+        ['Distraction Min',float,1.3,"Threat wandering  behavior weight will be at least this much (chase behavior is 1.0)."],
+        ['Distraction Max',float,1.5,"Threat wandering behavior weight will be at most this much (chase behavior is 1.0)."],
+        ['Caught Penalty',int,-1,"Score penalty when caught (integer).  If negative, it is a factor of the potential reward."],
+        ['Actor Scale',float,0.5,"Player, threat, and reward images are scaled by this.  Use to tune the feel of distance."],
+        ['Actor Speed Factor',float,10.0,"Adjust the speed of actors in terms of how long it would take the player to run to top of screen."],
+        ['Time Limit Factor',float,2.0,"How long the player has to complete the trial (a factor of 1.0 gives player enough time to run to top of screen)."],
+        ['Safe Zone',bool,True,"If True the threat can't cross the starting zone line."],
+        ['Show Cumulative Score',bool,False,"Monetary reward for subjects probably won't be based on cumulative score, but if you want to see it..."]])
+
+
+
+
+class Threat(Actor):
+    '''
+    '''
+    def __init__(self,pos=None, fast=False, detection_distance=HEIGHT*.6, speed=THREAT_SPEED, distracted=1.6, safe_y=0, weak=False):
+        if weak:
+            img=img_low_threat
+            shocker.level = exp_info['Low Shock Level']
+        else:
+            img=img_threat_fast
+            shocker.level = exp_info['High Shock Level']
+        
+        sprite=Sprite(img,scale=ACTOR_SCALE)
+        # this would show the detection distance I think, but collision is based on the sprite.
+        #sprite=Sprite(img,scale=2*detection_distance/img.height)
+        
+        Actor.__init__(self,sprite,pos=pos,collision_type='r')
+        
+        self.max_vel = speed
+        self.target = SimpleSteerable()
+        self.steering = SteeringManager(self)
+        self.steering.add('seek',Seek(self.target,slowing_radius=0.1,detection_distance=detection_distance),weight=1)
+        self.steering.add('wander',Wander(10,10),weight=distracted)
+        
+        self._ymin = safe_y
+    
+    def update(self,dt):        
+        self.target.pos = (0,self.parent.player.y)
+        #self.target.pos = (self.parent.player.x,self.parent.player.y)
+        self.steering.update(dt)
+        
+        if magnitude(self.steering['seek']._contrib):
+            print('chasing')
+        
+        #self.x=clamp(self.x,-self.parent.width/2,self.parent.width/2,self.width)
+        self.x=clamp(self.x,-self.parent.width/2,self.parent.width/2,self.width)
+        self.y=clamp(self.y,self._ymin,HEIGHT,self.height)
+        
+        
+        ##testing:
+        #from primitives import Circle
+        #c = Circle(0,0,width=100,color=(0.,.9,0.,1.))
+        #c.render()

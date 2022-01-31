@@ -1,0 +1,1 @@
+%windir%\System32\cmd.exe /k "C:\Users\Owner\Anaconda3\Scripts\activate.bat C:\Users\Owner\Anaconda3 & cd C:\Users\Owner\Desktop\foraging & python -i C:\Users\Owner\Desktop\foraging\main.py"

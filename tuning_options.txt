@@ -1,0 +1,18 @@
+Here are the current options for tuning if interested (also on the startup form):
+
+Subject ID: Unique ID for the participant, used for saving important results
+Shock Level: shock intensity (don't change for now)
+Threat Speed Min: Threats will move at least this fast relative to the player.
+Threat Speed Max: Threats will move at most this fast relative to the player.
+Risk Min: Rewards will be placed at least this far up the screen (fraction of screen).
+Risk Max: Rewards will be placed at most this far up the screen (fraction of screen).
+Detection Min: Minimum detection distance at which threats will start chasing the player (fraction of screen).
+Detection Max: Maximum detection distance at which threats will start chasing the player (fraction of screen).
+Distraction Min: Threat wandering behavior weight will be at least this much (chase behavior is 1.0).
+Distraction Max: Threat wandering behavior weight will be at most this much (chase behavior is 1.0).
+Caught Penalty: Score penalty when caught (integer).  If negative, it is a factor of the potential reward.
+Actor Scale: Player, threat, and reward images are scaled by this.  Use to tune the feel of distance.
+Actor Speed Factor: Adjust the speed of actors in terms of how long it would take the player to run to top of screen.
+Time Limit Factor: How long the player has to complete the trial (a factor of 1.0 gives player enough time to run to top of screen).
+Safe Zone: If True the threat can't cross the starting zone line.
+Show Cumulative Score: Monetary reward for subjects probably won't be based on cumulative score, but if you want to see it...
